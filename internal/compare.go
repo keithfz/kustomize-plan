@@ -20,7 +20,6 @@ func Compare(newManifests, prevManifests map[string]string) {
 		for _, v := range toCreate {
 			prettyManifest := appendCharToLines(newManifests[v], "+\t")
 			color.Green(prettyManifest)
-			fmt.Println("###")
 		}
 		printDivider()
 	}
@@ -48,9 +47,10 @@ func Compare(newManifests, prevManifests map[string]string) {
 		f2 := godiff.NewFileFromBytes([]byte(prevManifests[k]))
 		if f1.IsDifferentFrom(f2) {
 			resource := strings.Split(k, " ")
-			fmt.Printf("\n\t### Modified %s/%s ###\n", resource[1], resource[0])
+			fmt.Printf("\t ### Modified %s/%s ###\n", resource[1], resource[0])
 			godiff.ShowDiff(f1, f2, true)
 			updateCount += 1
+			fmt.Println("")
 		}
 	}
 	printDivider()
