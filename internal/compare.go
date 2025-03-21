@@ -18,24 +18,25 @@ func Compare(newManifests, prevManifests map[string]string) {
 	if createCount > 0 {
 		fmt.Println("\nResources to create:")
 		for _, v := range toCreate {
-			prettyManifest := appendCharToLines(newManifests[v], "\t+ ")
+			prettyManifest := appendCharToLines(newManifests[v], "+\t")
 			color.Green(prettyManifest)
-			fmt.Println("---")
+			fmt.Println("###")
 		}
 		printDivider()
 	}
 
-	fmt.Println("Resources to delete:")
-	for _, v := range toDelete {
-		prettyManifest := appendCharToLines(prevManifests[v], "\t- ")
-		color.Red(prettyManifest)
-		fmt.Println("")
+	if deleteCount > 0 {
+		fmt.Println("Resources to delete:")
+		for _, v := range toDelete {
+			prettyManifest := appendCharToLines(prevManifests[v], "-\t")
+			color.Red(prettyManifest)
+			fmt.Println("")
+		}
+		printDivider()
 	}
-	printDivider()
-
-	godiff.AdditionSign = "\t+"
-	godiff.RemovalSign = "\t-"
-	godiff.UnchangedSign = "\t "
+	godiff.AdditionSign = "+\t"
+	godiff.RemovalSign = "-\t"
+	godiff.UnchangedSign = " \t"
 	godiff.ShowUnchangedSign = true
 
 	fmt.Println("Resources to modify:")
@@ -47,7 +48,7 @@ func Compare(newManifests, prevManifests map[string]string) {
 		f2 := godiff.NewFileFromBytes([]byte(prevManifests[k]))
 		if f1.IsDifferentFrom(f2) {
 			resource := strings.Split(k, " ")
-			fmt.Printf("\n--- Modified %s/%s ---\n", resource[1], resource[0])
+			fmt.Printf("\n\t### Modified %s/%s ###\n", resource[1], resource[0])
 			godiff.ShowDiff(f1, f2, true)
 			updateCount += 1
 		}
@@ -86,7 +87,7 @@ func appendCharToLines(s string, char string) string {
 
 func printDivider() {
 	fmt.Println()
-	fmt.Println("--------------------")
+	fmt.Println()
 	fmt.Println()
 }
 
